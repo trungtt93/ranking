@@ -1,0 +1,253 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Poppins', sans-serif; /* A more playful, modern font */
+}
+
+.leaderboard-table thead th {
+    padding: 12px 15px;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    color: #888;
+    text-align: left;
+    border-bottom: 2px solid #eee;
+}
+.leaderboard-table thead .th-score {
+    text-align: right;
+}
+
+.leaderboard-table tbody td {
+    padding: 15px;
+    vertical-align: middle;
+    border-bottom: 1px solid #eee;
+    font-size: 0.95rem;
+}
+.leaderboard-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.leaderboard-table .rank {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #333;
+    width: 60px; /* Gives rank column a fixed width */
+    text-align: center;
+}
+
+.leaderboard-table .user {
+    display: flex;
+    align-items: center;
+}
+.leaderboard-table .user .avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    margin-right: 15px;
+    object-fit: cover;
+}
+.leaderboard-table .user .username {
+    font-weight: 600;
+}
+
+.leaderboard-table .score {
+    text-align: right;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #e67e22;
+}
+
+/* --- Top 3 Styling --- */
+.leaderboard-table .rank-1,
+.leaderboard-table .rank-2,
+.leaderboard-table .rank-3 {
+    font-weight: 700;
+}
+
+/* This is a common rule for all medal pseudo-elements */
+.leaderboard-table .rank-1 .rank::before,
+.leaderboard-table .rank-2 .rank::before,
+.leaderboard-table .rank-3 .rank::before {
+    font-size: 1.5rem;
+    display: block;
+    margin: -5px auto 5px; /* Adjust spacing of medal icon */
+}
+
+/* Set specific medal content for each rank */
+.leaderboard-table .rank-1 .rank::before {
+    content: '\1F947'; /* 1st Place Medal */
+}
+.leaderboard-table .rank-2 .rank::before {
+    content: '\1F948'; /* 2nd Place Medal */
+}
+.leaderboard-table .rank-3 .rank::before {
+    content: '\1F949'; /* 3rd Place Medal */
+}
+
+/* Background highlights for top ranks */
+.leaderboard-table .rank-1 { background-color: #fffbeb; }
+.leaderboard-table .rank-2 { background-color: #f8f9fa; }
+.leaderboard-table .rank-3 { background-color: #fef5e7; }
+
+.leader {
+    display: flex;
+}
+
+.crown {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+
+    svg {
+        width: 3rem;
+    }
+}
+
+.image {
+    height: 58px;
+    object-fit: cover;
+    width: 58px;
+    background-color: black;
+    border-radius: 50%;
+}
+
+.topLeadersList {
+    display: flex;
+    position: relative;
+    min-height: 120px;
+    margin-bottom: 70px;
+    .image {
+        border-radius: 50%;
+    }
+
+    .leader:nth-child(1) {
+        color: black;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+
+        &:after {
+            content: '1';
+            width: 30px;
+            height: 30px;
+            background: #ffc500;
+            border-radius: 50%;
+            position: absolute;
+            font-family: sans-serif;
+            text-align: center;
+            line-height: 30px;
+            font-weight: 700;
+            box-shadow: 1px 1px 4px black;
+            bottom: -12px;
+            right: 50px
+        }
+
+        .image {
+            width: 130px;
+            height: 130px;
+            border: 3px solid #ffc500;
+        }
+
+        .crown {
+            top: -20%;
+
+            svg {
+                fill: #ffc500;
+            }
+        }
+
+    }
+
+    .leader:nth-child(2) {
+        color: black;
+        position: absolute;
+        left: 15%;
+        transform: translateX(-15%);
+        bottom: -20%;
+
+        &:after {
+            content: '2';
+            width: 30px;
+            height: 30px;
+            background: #d4d4d4;
+            border-radius: 50%;
+            position: absolute;
+            font-family: sans-serif;
+            text-align: center;
+            line-height: 30px;
+            font-weight: 700;
+            box-shadow: 1px 1px 4px black;
+            bottom: -12px;
+            right: 40px
+        }
+
+        .image {
+            width: 110px;
+            height: 110px;
+            border: 3px solid #d4d4d4;
+        }
+
+        .crown {
+            top: -25%;
+
+            svg {
+                fill: #d4d4d4;
+            }
+        }
+    }
+
+    .leader:nth-child(3) {
+        color: black;
+        position: absolute;
+        left: 85%;
+        transform: translateX(-85%);
+        bottom: -20%;
+
+        &:after {
+            content: '3';
+            content: '3';
+            width: 30px;
+            height: 30px;
+            background: #ab6528;
+            border-radius: 50%;
+            position: absolute;
+            font-family: sans-serif;
+            text-align: center;
+            line-height: 30px;
+            font-weight: 700;
+            box-shadow: 1px 1px 4px black;
+            bottom: -12px;
+            right: 40px
+        }
+
+        .image {
+            width: 110px;
+            height: 110px;
+            border: 3px solid #ab6528;
+        }
+
+        .crown {
+            top: -25%;
+
+            svg {
+                fill: #ab6528;
+            }
+        }
+    }
+}
+
+.leaderName {
+    position: absolute;
+    text-align: center;
+    color: white;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 22px;
+}
+footer {
+    position: fixed;
+    height: 100px;
+    bottom: 0;
+    width: 100%;
+}

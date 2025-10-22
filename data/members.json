@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "name": "Liam Nguyen",
+    "avatar": "https://randomuser.me/api/portraits/men/45.jpg",
+    "password": "pT7@rW4kX9",
+    "created_at": "2025-10-21T14:32:18Z"
+  },
+  {
+    "id": 2,
+    "name": "Sofia Tran",
+    "avatar": "https://randomuser.me/api/portraits/women/68.jpg",
+    "password": "nK9!eL2fQ7",
+    "created_at": "2025-10-21T15:02:54Z"
+  },
+  {
+    "id": 3,
+    "name": "Ethan Pham",
+    "avatar": "https://randomuser.me/api/portraits/men/12.jpg",
+    "password": "xF3@tB6mV5",
+    "created_at": "2025-10-21T15:44:37Z"
+  },
+  {
+    "id": 4,
+    "name": "Ava Le",
+    "avatar": "https://randomuser.me/api/portraits/women/23.jpg",
+    "password": "rQ1#zH8kN4",
+    "created_at": "2025-10-21T16:10:22Z"
+  },
+  {
+    "id": 5,
+    "name": "Noah Vo",
+    "avatar": "https://randomuser.me/api/portraits/men/89.jpg",
+    "password": "sY6@vC3pT8",
+    "created_at": "2025-10-21T17:05:11Z"
+  }
+]
