@@ -5,4 +5,8 @@ module.exports = {
   index:async (req, res)=>{
     res.render('game', { title: 'Game' });
   },
+  store:async (req, res)=>{
+    const { name, password, role } = req.body;
+
+  },
 };

@@ -4,6 +4,7 @@
     width: 100%;
     border-collapse: collapse;
     font-family: 'Poppins', sans-serif; /* A more playful, modern font */
+    color: #1a1e21;
 }
 
 .leaderboard-table thead th {
@@ -21,7 +22,6 @@
 .leaderboard-table tbody td {
     padding: 15px;
     vertical-align: middle;
-    border-bottom: 1px solid #eee;
     font-size: 0.95rem;
 }
 .leaderboard-table tbody tr:last-child td {
@@ -49,6 +49,7 @@
 }
 .leaderboard-table .user .username {
     font-weight: 600;
+    font-size: 18px;
 }
 
 .leaderboard-table .score {
@@ -86,9 +87,17 @@
 }
 
 /* Background highlights for top ranks */
-.leaderboard-table .rank-1 { background-color: #fffbeb; }
-.leaderboard-table .rank-2 { background-color: #f8f9fa; }
-.leaderboard-table .rank-3 { background-color: #fef5e7; }
+.leaderboard-table .rank-1 { background-color: #ffc500; }
+.leaderboard-table .rank-2 { background-color: #d4d4d4; }
+.leaderboard-table .rank-3 { background-color: #ab6528; }
+.leaderboard-table .rank-4,
+.leaderboard-table .rank-5,
+.leaderboard-table .rank-6,
+.leaderboard-table .rank-7,
+.leaderboard-table .rank-8,
+.leaderboard-table .rank-9,
+.leaderboard-table .rank-10
+{ background-color: #fef5e7; }
 
 .leader {
     display: flex;
@@ -244,10 +253,22 @@
     left: 50%;
     transform: translateX(-50%);
     font-size: 22px;
+    margin-top: 10px;
 }
-footer {
+.footer {
     position: fixed;
     height: 100px;
     bottom: 0;
     width: 100%;
+}
+body{
+    background: gray;
+}
+.vh100{
+    background: #2c2c2c;
+    height: 100vh;
+    color: #fffbeb;
+}
+.gray-icon {
+    color: gray !important;
 }

@@ -17,7 +17,7 @@
                         />
                     </svg>
                 </div>
-                <div class="leaderName">Name 1</div>
+                <div class="leaderName"><%= i.name %></div>
             </div>
         </div>
     <% }) %>
@@ -33,7 +33,7 @@
             </thead>
             <tbody>
            <% members.forEach((i, index) => { %>
-            <tr>
+            <tr class="rank-<%= index+1 %>">
                 <td class="rank"><%= index+1 %></td>
                 <td class="user">
                     <img src="<%= i.avatar %>" alt="Avatar" class="avatar">
