@@ -262,13 +262,27 @@
     width: 100%;
 }
 body{
-    background: gray;
+    background-image: url("../images/bg.jpg");
+    background-size: auto;
 }
 .vh100{
-    background: #2c2c2c;
     height: 100vh;
     color: #fffbeb;
 }
 .gray-icon {
     color: gray !important;
+}
+a {
+    text-decoration: none;
+}
+.login-page {
+    padding-top: 25%;
+    height: 100vh;
+    align-items: center;
+}
+.form-right i {
+    font-size: 100px;
+}
+.bg-dark {
+    background-color: rgba(33, 37, 41, 0.8) !important;
 }

@@ -7,5 +7,13 @@ module.exports = {
         else resolve(rows);
       });
     });
+  },
+  login: (username, password) => {
+    return new Promise((resolve, reject) => {
+      db.get('SELECT * FROM members WHERE username = ? AND password = ?', [username, password], (err, rows) => {
+        if (err) reject(err);
+        else resolve(rows);
+      });
+    });
   }
 };

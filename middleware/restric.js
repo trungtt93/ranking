@@ -1,14 +1,8 @@
 module.exports = async (req, res, next)  => {
-  let reqToken = req.headers['authorization'];
-  if (reqToken) {
-    try {
-     //Todo
-      next();
-    }catch (e) {
-      logger.error(ref, "Unauthorized: " + reqToken);
-      res.status(401).json({ 'status': 'error', 'message': 'Unauthorized.' })
-    }
+  let member = req.session.member
+  if (member) {
+    next();
   } else {
-    res.status(401).json({ 'status': 'error', 'message': 'Invalid accessToken.' })
+    res.redirect('/login');
   }
 }
