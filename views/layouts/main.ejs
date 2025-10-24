@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
-    <link href="css/all.min.css" rel="stylesheet">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.bundle.min.js"></script>
+    <link href="/css/all.min.css" rel="stylesheet">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 <div class="container vh100">
@@ -18,7 +18,15 @@
     <div class="container bg-footer">
         <div class="row">
             <div class="col-4 text-center gray-icon"><a href="/"><i class="fa-3x fa-solid fa-ranking-star"></i></a></div>
-            <div class="col-4 text-center gray-icon"><a href="/table"><i class="fa-3x fa-solid fa-cards"></i></a></div>
+            <div class="col-4 text-center gray-icon">
+                <% if (currentPath == '/table' && member.role == 'admin') { %>
+                <a type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    <i class="fa-3x fa-solid fa-plus"></i>
+                </a>
+                <% } else { %>
+                <a href="/table"><i class="fa-3x fa-solid fa-cards"></i></a>
+                <% } %>
+            </div>
             <div class="col-4 text-center gray-icon"><a href="/"><i class="fa-3x fa-solid fa-chart-simple"></i></a></div>
         </div>
     </div>

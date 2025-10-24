@@ -291,3 +291,11 @@ a {
 .gray-icon i {
     color: #fef5e7 !important;
 }
+@media (max-width: 768px) {
+    .vh100 {
+        background: none !important;
+    }
+    #ranking-list{
+        padding-bottom: 70px;
+    }
+}

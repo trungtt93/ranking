@@ -1,6 +1,6 @@
 const db = require('../database/database');
 module.exports = {
-  getAllMembers: () => {
+  list: () => {
     return new Promise((resolve, reject) => {
       db.all('SELECT * FROM members', [], (err, rows) => {
         if (err) reject(err);
@@ -15,5 +15,14 @@ module.exports = {
         else resolve(rows);
       });
     });
-  }
+  },
+  getById: (id) => {
+    return new Promise((resolve, reject) => {
+      const sql = `SELECT * FROM members WHERE id = ? LIMIT 1`;
+      db.get(sql, [id], (err, row) => {
+        if (err) reject(err);
+        else resolve(row || null); // return null if not found
+      });
+    });
+  },
 };

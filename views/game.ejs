@@ -1,0 +1,36 @@
+<div id="ranking-list" class="list-group">
+    <table class="leaderboard-table mt-3 game">
+        <thead>
+        <tr>
+            <th scope="col">Nghiện</th>
+            <th scope="col">Bốc</th>
+            <th scope="col">Tổng</th>
+            <th scope="col">Cashback</th>
+            <th scope="col">Thuế</th>
+            <th scope="col">Bú</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% members.forEach((i, index) => { %>
+        <tr class="rank-4">
+            <td class="user">
+                <img src="<%= i.avatar %>" alt="Avatar" class="avatar">
+                <span class="username"><%= i.name %></span>
+            </td>
+            <td class="score">0</td>
+            <td class="score">0</td>
+            <td class="score">0</td>
+            <td class="score">0</td>
+            <td class="score">0</td>
+        </tr>
+        <% }) %>
+        </tbody>
+    </table>
+</div>
+<style>
+    .game{
+        th, .score {
+            text-align: center !important;
+        }
+    }
+</style>

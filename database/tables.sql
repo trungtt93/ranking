@@ -32,3 +32,15 @@ CREATE TABLE IF NOT EXISTS games (
                                      FOREIGN KEY(table_id) REFERENCES tables(id)
     FOREIGN KEY(member_id) REFERENCES members(id)
     );
+
+CREATE TABLE IF NOT EXISTS buyin_requests (
+                                             id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                             game_id INTEGER,
+                                             member_id INTEGER,
+                                             buyin INTEGER,
+                                             status TEXT,
+                                             approved_at TEXT,
+                                             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                                             FOREIGN KEY(member_id) REFERENCES members(id)
+                                             FOREIGN KEY(game_id) REFERENCES games(id)
+    );

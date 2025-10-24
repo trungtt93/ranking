@@ -25,9 +25,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 route(app);
-app.use(function(req, res) {
-  res.send("Cút")
-});
+
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
