@@ -12,6 +12,10 @@ app.use(session({
   secret: 'hihi',
   resave: false,
   saveUninitialized: false,
+  rolling: true,
+  cookie: {
+    maxAge: 60 * 60 * 1000  // 1h⏰
+  }
 }));
 
 app.use(expressLayouts);

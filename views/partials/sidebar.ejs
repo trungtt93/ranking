@@ -1,0 +1,104 @@
+<div class="sidebar-btn-o">
+    <i class="fa-solid fa-card-spade"></i>
+</div>
+<div class="sidebar">
+    <div class="sidebar-menu">
+        <div class="sidebar-btn-x">
+            <i class="fa fa-remove"></i>
+        </div>
+        <div class="user-info">
+            <% if (member) { %>
+            <div class="row user-block">
+                <div class="col-5" style="padding-right: 0">
+                    <img src="<%= member.avatar %>" alt="" width="50px">
+                </div>
+                <div class="col-7 text-start" style="padding-left: 0">
+                    <p><%= member.name %></p>
+                    <span><%= member.role %></span>
+                </div>
+            </div>
+            <button onclick="window.location.href='/logout'" class="btn btn-outline-danger btn-100 mt-3">
+                <i class="fa-solid fa-person-walking-arrow-loop-left"></i> Nghỉ
+            </button>
+            <% } %>
+        </div>
+    </div>
+</div>
+<style>
+
+.sidebar-menu {
+    width: 200px;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    background-color: rgba(33, 37, 41) !important;
+    display: none;
+    z-index: 9999;
+}
+.user-info {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 30px;
+    position: absolute;
+    bottom: 50px;
+}
+.user-block {
+    img {
+        border-radius: 50%;
+    }
+    p {
+        text-align: left;
+        margin-bottom: 0;
+        font-weight: bold;
+        font-size: 16px;
+    }
+    span {
+        text-align: left;
+        font-size: 14px;
+        color: #6b7280;
+    }
+}
+.sidebar-btn-x {
+    font-size: 25px;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    color: #5c636a;
+    cursor: pointer;
+}
+.sidebar-btn-o {
+    font-size: 40px;
+    position: absolute;
+    color: #fef5e7;
+    cursor: pointer;
+    z-index: 9999;
+}
+.btn-100 {
+    width: 80%;
+    margin: 10px 15px;
+}
+.menu li {
+    width: 100%;
+}
+.menu li a {
+    display: block;
+    padding: 10px 15px;
+    color: #e5e7eb;
+    text-decoration: none;
+}
+.menu li a:hover {
+    background: #374151;
+}
+</style>
+<script>
+    $(document).ready(function() {
+        $('.sidebar-btn-x').click(function() {
+            $('.sidebar-menu').animate({width: 'toggle'}, 300);
+            $('.sidebar-btn-o').show()
+        });
+        $('.sidebar-btn-o').click(function() {
+            $('.sidebar-menu').animate({width: 'toggle'}, 300);
+            $(this).hide()
+        });
+    });
+</script>

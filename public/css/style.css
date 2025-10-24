@@ -257,7 +257,6 @@
 }
 .footer {
     position: fixed;
-    height: 100px;
     bottom: 0;
     width: 100%;
 }
@@ -267,10 +266,9 @@ body{
 }
 .vh100{
     height: 100vh;
+    padding: 0 !important;
     color: #fffbeb;
-}
-.gray-icon {
-    color: gray !important;
+    background-color: rgba(33, 37, 41, 0.7) !important;
 }
 a {
     text-decoration: none;
@@ -285,4 +283,11 @@ a {
 }
 .bg-dark {
     background-color: rgba(33, 37, 41, 0.8) !important;
+}
+.bg-footer {
+    background-color: rgba(33, 37, 41, 0.9) !important;
+    padding: 10px 0;
+}
+.gray-icon i {
+    color: #fef5e7 !important;
 }

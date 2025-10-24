@@ -1,47 +1,49 @@
+<%- include('partials/sidebar') %>
+
 <div class="topLeadersList">
     <% top.forEach((i, index) => { %>
-        <div class="leader" >
-            <div class="containerImage">
-                <img class="image" loading="lazy" src="<%= i.avatar %>" />
-                <div class="crown">
-                    <svg
-                            id="crown<%= index+1 %>"
-                            fill="#0f74b5"
-                            data-name="Layer <%= index+1 %>"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 100 50"
-                    >
-                        <polygon
-                                class="cls-1"
-                                points="12.7 50 87.5 50 100 0 75 25 50 0 25.6 25 0 0 12.7 50"
-                        />
-                    </svg>
-                </div>
-                <div class="leaderName"><%= i.name %></div>
+    <div class="leader" >
+        <div class="containerImage">
+            <img class="image" loading="lazy" src="<%= i.avatar %>" />
+            <div class="crown">
+                <svg
+                        id="crown<%= index+1 %>"
+                        fill="#0f74b5"
+                        data-name="Layer <%= index+1 %>"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 100 50"
+                >
+                    <polygon
+                            class="cls-1"
+                            points="12.7 50 87.5 50 100 0 75 25 50 0 25.6 25 0 0 12.7 50"
+                    />
+                </svg>
             </div>
+            <div class="leaderName"><%= i.name %></div>
         </div>
+    </div>
     <% }) %>
-    </div>
-    <div id="ranking-list" class="list-group">
-        <table class="leaderboard-table">
-            <thead>
-            <tr>
-                <th scope="col">Rank</th>
-                <th scope="col">User</th>
-                <th scope="col" class="th-score">Score</th>
-            </tr>
-            </thead>
-            <tbody>
-           <% members.forEach((i, index) => { %>
-            <tr class="rank-<%= index+1 %>">
-                <td class="rank"><%= index+1 %></td>
-                <td class="user">
-                    <img src="<%= i.avatar %>" alt="Avatar" class="avatar">
-                    <span class="username"><%= i.name %></span>
-                </td>
-                <td class="score">20,150</td>
-            </tr>
-            <% }) %>
-            </tbody>
-        </table>
-    </div>
+</div>
+<div id="ranking-list" class="list-group">
+    <table class="leaderboard-table">
+        <thead>
+        <tr>
+            <th scope="col">Rank</th>
+            <th scope="col">User</th>
+            <th scope="col" class="th-score">Score</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% members.forEach((i, index) => { %>
+        <tr class="rank-<%= index+1 %>">
+            <td class="rank"><%= index+1 %></td>
+            <td class="user">
+                <img src="<%= i.avatar %>" alt="Avatar" class="avatar">
+                <span class="username"><%= i.name %></span>
+            </td>
+            <td class="score">20,150</td>
+        </tr>
+        <% }) %>
+        </tbody>
+    </table>
+</div>
