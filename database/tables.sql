@@ -22,12 +22,13 @@ CREATE TABLE IF NOT EXISTS games (
                                      id INTEGER PRIMARY KEY AUTOINCREMENT,
                                      table_id INTEGER,
                                      member_id INTEGER,
-                                     buyin_request INTEGER,
-                                     buyin_approve INTEGER,
-                                     total INTEGER,
-                                     cashback INTEGER,
-                                     fee INTEGER,
-                                     amount INTEGER,
+                                     buyin_request INTEGER DEFAULT 0,
+                                     buyin_approve INTEGER DEFAULT 0,
+                                     total INTEGER DEFAULT 0,
+                                     cashback INTEGER DEFAULT 0,
+                                     cashback_list TEXT,
+                                     fee INTEGER DEFAULT 0,
+                                     amount INTEGER DEFAULT 0,
                                      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                                      FOREIGN KEY(table_id) REFERENCES tables(id)
     FOREIGN KEY(member_id) REFERENCES members(id)
@@ -35,12 +36,12 @@ CREATE TABLE IF NOT EXISTS games (
 
 CREATE TABLE IF NOT EXISTS buyin_requests (
                                              id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                             game_id INTEGER,
+                                             table_id INTEGER,
                                              member_id INTEGER,
                                              buyin INTEGER,
                                              status TEXT,
-                                             approved_at TEXT,
+                                             updated_at DATETIME,
                                              created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                                              FOREIGN KEY(member_id) REFERENCES members(id)
-                                             FOREIGN KEY(game_id) REFERENCES games(id)
+                                             FOREIGN KEY(table_id) REFERENCES tables(id)
     );

@@ -15,7 +15,7 @@
         <tr class="rank-4">
             <td class="user">
                 <img src="<%= i.avatar %>" alt="Avatar" class="avatar">
-                <span class="username"><%= i.name %></span>
+                <span class="username <%= i.id == table.member_id ? 'cave-text' : '' %>"><%= i.name %></span>
             </td>
             <td class="score">0</td>
             <td class="score">0</td>
@@ -27,10 +27,41 @@
         </tbody>
     </table>
 </div>
+<div class="modal fade" id="bocModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Bốc bát họ</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body cave-list">
+                <img src="/images/boc.webp" alt="" width="200">
+                Nhờ <%= table.member_name%> bốc giúp 1 bát, All-in
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-outline-info" id="tableSubmit">Bốc</button>
+            </div>
+            <form action="/buyin" method="POST" id="buyinForm">
+                <input type="hidden" name="member_id" value="<%= member.id%>">
+                <input type="hidden" name="table_id" value="<%= table.table_id%>">
+            </form>
+        </div>
+    </div>
+</div>
 <style>
+    .boc {
+        cursor: pointer;
+    }
     .game{
         th, .score {
             text-align: center !important;
         }
     }
 </style>
+<script>
+    $(document).ready(function() {
+        $('#tableSubmit').click(function() {
+            $('#buyinForm').submit();
+        });
+    });
+</script>

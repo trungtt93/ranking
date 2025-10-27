@@ -23,6 +23,10 @@
                 <a type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
                     <i class="fa-3x fa-solid fa-plus"></i>
                 </a>
+                <% } else if (currentPath.includes('/game')) { %>
+                <a type="button" data-bs-toggle="modal"  class="boc" data-bs-target="#bocModal">
+                    <i class="fa-3x fa-solid fa-plus"></i>
+                </a>
                 <% } else { %>
                 <a href="/table"><i class="fa-3x fa-solid fa-cards"></i></a>
                 <% } %>

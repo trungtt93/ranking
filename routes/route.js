@@ -8,6 +8,7 @@ module.exports = (app) => {
   app.route('/table').get(restrict, game.table);
   app.route('/table').post(restrict, game.create);
   app.route('/game/:id').get(restrict, game.index);
+  app.route('/buyin').post(restrict, game.buyin);
 
   app.get('/logout', (req, res) => {
     req.session.destroy(() => res.redirect('/login'));

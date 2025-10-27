@@ -1,5 +1,7 @@
 const memberRepo = require("../repositories/member");
 const tableRepo = require("../repositories/table");
+const gameRepo = require("../repositories/game");
+const requestRepo = require("../repositories/request");
 const moment = require('moment');
 module.exports = {
   table:async (req, res)=>{
@@ -26,5 +28,16 @@ module.exports = {
     var title = `Bàn của `;
     const table =  await tableRepo.create(member_id, title);
     res.redirect(`/game/${table.id}`);
+  },
+  buyin:async (req, res)=>{
+    const { member_id, table_id } = req.body;
+    const game = await gameRepo.findOrCreate(table_id, member_id);
+    const hasRequest = await requestRepo.hasRequest(table_id, member_id);
+    if (game && !hasRequest) {
+      await requestRepo.request(table_id, member_id);
+      await gameRepo.updateRequest(game.id, game.buyin_request + 1);
+    }
+
+    res.redirect(`/game/${table_id}?hasRequest=${hasRequest}`);
   },
 };
