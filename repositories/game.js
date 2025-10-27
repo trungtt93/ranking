@@ -25,14 +25,46 @@ module.exports = {
     });
   },
   updateRequest: (id, request) => {
-    const sql = `
-        UPDATE games
-        SET buyin_request = ?
-        WHERE id = ?
+    return new Promise((resolve, reject) => {
+      const sql = `
+          UPDATE games
+          SET buyin_request = ?
+          WHERE id = ?
+      `;
+      db.run(sql, [request, id], function (err) {
+        if (err) reject(err);
+        else resolve({changes: this.changes}); // number of rows updated
+      });
+    });
+  },
+  getMembersInGame: (tableId) => {
+    return new Promise((resolve, reject) => {
+      const sql = `
+      SELECT 
+        m.id AS member_id,
+        m.name,
+        m.username,
+        m.avatar,
+        m.role,
+        g.id AS game_id,
+        g.table_id,
+        g.buyin_request,
+        g.buyin_approve,
+        g.total,
+        g.cashback,
+        g.fee,
+        g.amount,
+        g.created_at AS game_created_at
+      FROM games g
+      JOIN members m ON g.member_id = m.id
+      WHERE g.table_id = ?
     `;
-    db.run(sql, [request, id], function (err) {
-      if (err) reject(err);
-      else resolve({ changes: this.changes }); // how many rows updated
+
+      db.all(sql, [tableId], (err, rows) => {
+        if (err) reject(err);
+        else resolve(rows);
+      });
     });
   }
+
 };

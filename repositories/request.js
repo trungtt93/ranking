@@ -34,5 +34,34 @@ module.exports = {
       if (err) reject(err);
       else resolve({ changes: this.changes }); // how many rows updated
     });
-  }
+  },
+  getTimelineByTable: (tableId) => {
+    return new Promise((resolve, reject) => {
+      const sql = `
+          SELECT
+              br.id AS request_id,
+              m.name AS member_name,
+              m.avatar,
+              br.table_id,
+              br.buyin,
+              br.status,
+              strftime('%H:%M', br.updated_at) AS updated_at,
+              strftime('%H:%M', br.created_at) AS created_at,
+              CASE
+                  WHEN br.status = 'waiting' THEN br.created_at
+                  ELSE br.updated_at
+                  END AS timeline_time
+          FROM buyin_requests br
+                   JOIN members m ON m.id = br.member_id
+          WHERE br.table_id = ?
+            AND br.status IN ('waiting', 'approved', 'rejected')
+          ORDER BY timeline_time ASC
+      `;
+
+      db.all(sql, [tableId], (err, rows) => {
+        if (err) reject(err);
+        else resolve(rows);
+      });
+    });
+  },
 };

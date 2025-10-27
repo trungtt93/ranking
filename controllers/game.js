@@ -15,11 +15,9 @@ module.exports = {
   },
   index:async (req, res)=>{
     const id = req.params.id;
-    const members = await memberRepo.list();
     const table = await tableRepo.getById(id);
     res.render('game', {
       title: table.title + ' ' + table.member_name,
-      members,
       table
     });
   },
@@ -37,7 +35,16 @@ module.exports = {
       await requestRepo.request(table_id, member_id);
       await gameRepo.updateRequest(game.id, game.buyin_request + 1);
     }
-
     res.redirect(`/game/${table_id}?hasRequest=${hasRequest}`);
   },
+  membersInGame:async (req, res)=>{
+    const tableId = req.params.id;
+    const membersInGame = await gameRepo.getMembersInGame(tableId);
+    res.json(membersInGame);
+  },
+  timeline:async (req, res)=>{
+    const tableId = req.params.id;
+    const timeline = await requestRepo.getTimelineByTable(tableId);
+    res.json(timeline);
+  }
 };
