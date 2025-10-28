@@ -1,15 +1,15 @@
 const db = require('../database/database');
 module.exports = {
-  create: (memberId, title) => {
+  create: (seasonId, memberId, title) => {
     return new Promise((resolve, reject) => {
-      const sql = `INSERT INTO tables (member_id, title) VALUES (?, ?)`;
-      db.run(sql, [memberId, title], function (err) {
+      const sql = `INSERT INTO tables (season_id, member_id, title) VALUES (?, ?, ?)`;
+      db.run(sql, [seasonId, memberId, title], function (err) {
         if (err) reject(err);
         else resolve({ id: this.lastID, member_id: memberId, title });
       });
     });
   },
-  list: () => {
+  list: (seasonId) => {
     return new Promise((resolve, reject) => {
       const sql = `
           SELECT
@@ -26,9 +26,10 @@ module.exports = {
           END AS is_today
           FROM tables t
                    JOIN members m ON t.member_id = m.id
+              WHERE t.season_id = ?
           ORDER BY t.id DESC
       `;
-      db.all(sql, [], (err, rows) => {
+      db.all(sql, [seasonId], (err, rows) => {
         if (err) reject(err);
         else resolve(rows);
       });

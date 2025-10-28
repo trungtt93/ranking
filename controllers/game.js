@@ -2,15 +2,18 @@ const memberRepo = require("../repositories/member");
 const tableRepo = require("../repositories/table");
 const gameRepo = require("../repositories/game");
 const requestRepo = require("../repositories/request");
-const moment = require('moment');
+const seasonRepo = require("../repositories/season");
 module.exports = {
   table:async (req, res)=>{
+    const seasonId = req.query.season || null
+    const season = await seasonRepo.season(seasonId);
     const members = await memberRepo.list();
-    const tables = await tableRepo.list();
+    const tables = await tableRepo.list(season.id);
     res.render('table', {
       title: 'Table',
       members,
-      tables
+      tables,
+      season
     });
   },
   index:async (req, res)=>{
@@ -22,9 +25,10 @@ module.exports = {
     });
   },
   create:async (req, res)=>{
+    const season = await seasonRepo.season();
     const { member_id } = req.body;
     var title = `Bàn của `;
-    const table =  await tableRepo.create(member_id, title);
+    const table =  await tableRepo.create(season.id, member_id, title);
     res.redirect(`/game/${table.id}`);
   },
   buyin:async (req, res)=>{

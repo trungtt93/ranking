@@ -8,6 +8,29 @@ function shuffleArray(array) {
 }
 
 module.exports = {
+  season: (seasonId = null) => {
+    return new Promise((resolve, reject) => {
+      let sql;
+      let params = [];
+
+      if (seasonId) {
+        // ✅ Nếu có id
+        sql = `SELECT * FROM seasons WHERE id = ? LIMIT 1`;
+        params = [seasonId];
+      } else {
+        // ✅ Nếu không có id -> lấy season mới nhất
+        sql = `SELECT * FROM seasons ORDER BY id DESC LIMIT 1`;
+      }
+
+      db.get(sql, params, (err, row) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(row || null);
+        }
+      });
+    });
+  },
   list: () => {
     return new Promise((resolve, reject) => {
       const sql = `
