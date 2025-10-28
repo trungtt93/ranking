@@ -1,8 +1,10 @@
 const _ = require('lodash');
 const memberRepo = require('../repositories/member');
+const seasonRepo = require('../repositories/season');
 module.exports = {
   index: async (req, res)=> {
-    const members = await memberRepo.list();
+    const seasonId = req.query.season || null
+    const members = await seasonRepo.seasonMembers(seasonId);
     const top = _.take(members,3)
     res.render('index', {
       title: 'Ranking',

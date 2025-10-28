@@ -51,7 +51,10 @@
       let tableId = '<%= table.table_id %>';
       loadMembers(tableId);
       loadTimeline(tableId);
-      // setInterval(loadMembers(tableId), 1000);
+      setInterval(function () {
+        loadMembers(tableId);
+        loadTimeline(tableId);
+      }, 1000);
     });
 
     function loadMembers(tableId) {
@@ -81,8 +84,6 @@
             `;
             });
             html += '</ul>';
-          } else {
-            html = '<p>No members in this game.</p>';
           }
           $('#member-list').html(html);
         },
@@ -101,20 +102,24 @@
           $timeline.empty();
 
           if (!data || data.length === 0) {
-            $timeline.append('<p style="text-align:center;">No buy-in requests yet.</p>');
+            $timeline.append('<p style="text-align:center;">Chưa có nghiện nào trong bàn</p>');
             return;
           }
-
           data.forEach(item => {
+            console.log("<%= table.member_id %>")
             let status = item.status === 'approved' ? `Đã duyệt - ${item.updated_at}` : 'Chờ duyệt';
-            const html = `
+            let isCave = "<%= table.member_id %>" == item.member_id
+            let approveBtn = item.status === 'waiting' && isCave
+              ? `<button class="btn btn-sm btn-danger" data-id="${item.id}"><i class="fa-solid fa-ban"></i></button>
+                 <button class="btn btn-sm btn-info" data-id="${item.id}"><i class="fa-solid fa-money-bill-1"></i></button>`
+              : '';
+            let html = `
               <li>
                 <span></span>
                 <div class="title"><strong>${item.member_name}</strong> xin bốc thêm 1 bát</div>
                 <div class="info ${item.status}">${status}</div>
-                <div class="time">
-                    <span>${item.created_at}</span>
-                </div>
+                <div class="time"><span>${item.created_at}</span></div>
+                <div class="btnAction">${approveBtn}</div>
             </li>
             `;
             $timeline.append(html);
@@ -131,3 +136,13 @@
     }
     // Load immediately once
 </script>
+<style>
+    .btnAction {
+        position: absolute;
+        right: 10px;
+        top: 15px;
+        button {
+
+        }
+    }
+</style>

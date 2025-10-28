@@ -28,9 +28,9 @@
     <table class="leaderboard-table">
         <thead>
         <tr>
-            <th scope="col">Rank</th>
-            <th scope="col">User</th>
-            <th scope="col" class="th-score">Score</th>
+            <th scope="col">Top</th>
+            <th scope="col">Nghiện</th>
+            <th scope="col" class="th-score text-center">Bú</th>
         </tr>
         </thead>
         <tbody>
@@ -41,7 +41,7 @@
                 <img src="<%= i.avatar %>" alt="Avatar" class="avatar">
                 <span class="username"><%= i.name %></span>
             </td>
-            <td class="score">20,150</td>
+            <td class="score text-center"><%= i.amount %></td>
         </tr>
         <% }) %>
         </tbody>

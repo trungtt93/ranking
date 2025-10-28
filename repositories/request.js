@@ -41,6 +41,7 @@ module.exports = {
           SELECT
               br.id AS request_id,
               m.name AS member_name,
+              m.id AS member_id,
               m.avatar,
               br.table_id,
               br.buyin,

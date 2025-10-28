@@ -1,0 +1,104 @@
+<div id="ranking-list" class="list-group">
+    <h3></h3>
+    <table class="leaderboard-table mt-3">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Season</th>
+            <th scope="col">Quỹ</th>
+            <th scope="col">Trạng thái</th>
+            <th scope="col" class="th-score">Bắt đầu</th>
+            <th scope="col" class="th-score">Kết thúc</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% seasons.forEach((i, index) => { %>
+        <tr class="<%= i.status == 'progress' ? 'rank-1' : 'rank-2' %> table-item" onclick="window.location.href='/?season=<%= i.id %>'">
+            <td class="">#<%= i.id %></td>
+            <td class="user"><%= i.title %></td>
+            <td><%= i.legacy_fund %></td>
+            <td><% if (i.status == 'progress') { %>
+                Đang quẩy
+            <% } else { %>
+                Đã nghỉ
+            <% } %></td>
+            <td class="score">
+                <%= i.start_date %>
+            </td>
+            <td class="score">
+                <% if (i.status == 'progress' && member.role == 'admin') { %>
+                <form action="/season/<%= i.id %>/close" method="post">
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Kết thúc</button>
+                </form>
+                <% } else { %>
+                <%= i.end_date %>
+                <% } %>
+            </td>
+        </tr>
+        <% }) %>
+        </tbody>
+    </table>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/season" method="POST" id="tableForm">
+                <div class="modal-body cave-list">
+                    <h4 class="text-center">Tạo season mới sẽ close season cũ</h4>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" id="title" name="title" required placeholder="Tên season">
+                        </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="submit" class="btn btn-outline-info">Tạo</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .table-item {
+        border: 1px solid transparent;
+        border-bottom-color: #444;
+        cursor: pointer;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .table-item:hover {
+        border-color: #ffc500 !important;
+        font-size: 20px;
+    }
+    .cave-list {
+        ul  {
+            padding: 0;
+        }
+        li {
+            list-style: none;
+            padding: 5px 20px;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+        img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        li:nth-child(odd) {
+            background: #7777
+        }
+        li:nth-child(even) {
+            background: #9999
+        }
+        li:hover, li.active {
+            background: #d8d8d8;
+            border-color: yellow ;
+        }
+    }
+    .modal-header, .modal-footer{
+        border-bottom: none !important;
+        border-top: none !important;
+    }
+</style>

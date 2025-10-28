@@ -29,13 +29,17 @@ module.exports = {
   },
   buyin:async (req, res)=>{
     const { member_id, table_id } = req.body;
-    const game = await gameRepo.findOrCreate(table_id, member_id);
     const hasRequest = await requestRepo.hasRequest(table_id, member_id);
-    if (game && !hasRequest) {
+    if (!hasRequest) {
       await requestRepo.request(table_id, member_id);
-      await gameRepo.updateRequest(game.id, game.buyin_request + 1);
     }
     res.redirect(`/game/${table_id}?hasRequest=${hasRequest}`);
+  },
+  buyinProcess:async (req, res)=>{
+    const { table_id, member_id, action } = req.body;
+    const game = await gameRepo.findOrCreate(table_id, member_id);
+    await gameRepo.updateRequest(game.id, game.buyin + 1);
+    res.redirect(`/game/${table_id}}`);
   },
   membersInGame:async (req, res)=>{
     const tableId = req.params.id;
