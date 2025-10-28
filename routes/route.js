@@ -16,6 +16,7 @@ module.exports = (app) => {
 
   app.route('/api/game/:id/members').get(game.membersInGame);
   app.route('/api/game/:id/timeline').get(game.timeline);
+  app.route('/api/game/buyin/process').post(game.buyinProcess);
   app.get('/logout', (req, res) => {
     req.session.destroy(() => res.redirect('/login'));
   });

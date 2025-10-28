@@ -600,7 +600,8 @@ a {
     margin-bottom: 0;
 }
 #first-list {
-    .awaiting {
+
+    .rejected {
         color: darkred;
     }
     .approved {

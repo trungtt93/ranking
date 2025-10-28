@@ -24,16 +24,35 @@ module.exports = {
       });
     });
   },
-  updateRequest: (id, request) => {
+  updateRequest: (table_id, member_id, action) => {
     return new Promise((resolve, reject) => {
-      const sql = `
-          UPDATE games
-          SET buyin_request = ?
-          WHERE id = ?
+      const updateRequestSql = `
+          UPDATE buyin_requests
+          SET status = ?, updated_at = CURRENT_TIMESTAMP
+          WHERE table_id = ? AND member_id = ? AND status = 'waiting'
       `;
-      db.run(sql, [request, id], function (err) {
-        if (err) reject(err);
-        else resolve({changes: this.changes}); // number of rows updated
+
+      db.run(updateRequestSql, [action, table_id, member_id], function (err) {
+        if (err) return reject(err);
+
+        if (this.changes === 0) {
+          return resolve({ message: 'No pending request found', updated: 0 });
+        }
+
+        if (action === 'approved') {
+          const updateGameSql = `
+          UPDATE games
+          SET buyin = buyin + 1,
+              updated_at = CURRENT_TIMESTAMP
+          WHERE table_id = ? AND member_id = ?
+        `;
+          db.run(updateGameSql, [table_id, member_id], function (err2) {
+            if (err2) reject(err2);
+            else resolve({ message: 'Buyin approved and game updated', updated: 1 });
+          });
+        } else {
+          resolve({ message: `Buyin request ${action}`, updated: 1 });
+        }
       });
     });
   },

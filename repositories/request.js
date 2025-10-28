@@ -14,25 +14,31 @@ module.exports = {
       });
     });
   },
-  request: (game_id, member_id) => {
+  request: (table_id, member_id) => {
     return new Promise((resolve, reject) => {
-      const sql = `INSERT INTO buyin_requests (table_id, member_id, buyin, status) VALUES (?, ?, ?, ?)`;
-      db.run(sql, [game_id, member_id, 1, common.STATUS.WAITING], function (err) {
-        if (err) reject(err);
-        else resolve({ id: this.lastID });
-      });
-    });
-  },
-  update: (request_id, status) => {
-    const sql = `
-        UPDATE buyin_requests
-        SET status = ?,
-            updated_at = CURRENT_TIMESTAMP
-        WHERE id = ?
+      db.serialize(() => {
+        const insertGameSql = `
+        INSERT INTO games (table_id, member_id, buyin, total, cashback, fee, amount)
+        SELECT ?, ?, 0, 0, 0, 0, 0
+        WHERE NOT EXISTS (
+          SELECT 1 FROM games WHERE table_id = ? AND member_id = ?
+        )
       `;
-    db.run(sql, [status, request_id], function (err) {
-      if (err) reject(err);
-      else resolve({ changes: this.changes }); // how many rows updated
+
+        db.run(insertGameSql, [table_id, member_id, table_id, member_id], function (err) {
+          if (err) return reject(err);
+
+          const insertRequestSql = `
+          INSERT INTO buyin_requests (table_id, member_id, buyin, status)
+          VALUES (?, ?, ?, ?)
+        `;
+
+          db.run(insertRequestSql, [table_id, member_id, 1, 'waiting'], function (err2) {
+            if (err2) reject(err2);
+            else resolve({ id: this.lastID });
+          });
+        });
+      });
     });
   },
   getTimelineByTable: (tableId) => {
@@ -56,7 +62,7 @@ module.exports = {
                    JOIN members m ON m.id = br.member_id
           WHERE br.table_id = ?
             AND br.status IN ('waiting', 'approved', 'rejected')
-          ORDER BY timeline_time ASC
+          ORDER BY timeline_time DESC
       `;
 
       db.all(sql, [tableId], (err, rows) => {

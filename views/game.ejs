@@ -51,10 +51,10 @@
       let tableId = '<%= table.table_id %>';
       loadMembers(tableId);
       loadTimeline(tableId);
-      setInterval(function () {
-        loadMembers(tableId);
-        loadTimeline(tableId);
-      }, 1000);
+      // setInterval(function () {
+      //   loadMembers(tableId);
+      //   loadTimeline(tableId);
+      // }, 1000);
     });
 
     function loadMembers(tableId) {
@@ -66,7 +66,8 @@
           if (data.length > 0) {
             html += '<ul>';
             data.forEach(member => {
-              let total = member.buyin_approve * 50
+              console.log(member)
+              let total = member.buyin * 50
               let amount = member.cashback - total
               let fee = calcFee(amount)
               html += `
@@ -106,12 +107,16 @@
             return;
           }
           data.forEach(item => {
-            console.log("<%= table.member_id %>")
-            let status = item.status === 'approved' ? `Đã duyệt - ${item.updated_at}` : 'Chờ duyệt';
+            const statusMap = {
+              approved: `Đã duyệt - ${item.updated_at}`,
+              rejected: `Từ chối - ${item.updated_at}`,
+              waiting: 'Chờ duyệt'
+            };
+            let status = statusMap[item.status] || 'Chờ duyệt';
             let isCave = "<%= table.member_id %>" == item.member_id
             let approveBtn = item.status === 'waiting' && isCave
-              ? `<button class="btn btn-sm btn-danger" data-id="${item.id}"><i class="fa-solid fa-ban"></i></button>
-                 <button class="btn btn-sm btn-info" data-id="${item.id}"><i class="fa-solid fa-money-bill-1"></i></button>`
+              ? `<button class="btn btn-sm btn-danger" onclick="processRequest('${item.member_id}', 'rejected')"><i class="fa-solid fa-ban"></i></button>
+                 <button class="btn btn-sm btn-info" onclick="processRequest('${item.member_id}', 'approved')"><i class="fa-solid fa-money-bill-1"></i></button>`
               : '';
             let html = `
               <li>
@@ -131,6 +136,25 @@
       });
     }
 
+    function processRequest(memberId, action) {
+      let tableId = '<%= table.table_id %>';
+      $.ajax({
+        url: `/api/game/buyin/process`,
+        method: 'POST',
+        data: {
+          table_id: tableId,
+          member_id: memberId,
+          action: action
+        },
+        success: function(response) {
+          loadTimeline(tableId);
+          loadMembers(tableId);
+        },
+        error: function(err) {
+          console.error(`Error processing request ${action}:`, err);
+        }
+      });
+    }
     function calcFee(total) {
       return total
     }

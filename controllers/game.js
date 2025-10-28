@@ -41,9 +41,10 @@ module.exports = {
   },
   buyinProcess:async (req, res)=>{
     const { table_id, member_id, action } = req.body;
+    console.log(table_id, member_id, action);
     const game = await gameRepo.findOrCreate(table_id, member_id);
-    await gameRepo.updateRequest(game.id, game.buyin + 1);
-    res.redirect(`/game/${table_id}}`);
+    await gameRepo.updateRequest(table_id, member_id, action);
+    res.json(game);
   },
   membersInGame:async (req, res)=>{
     const tableId = req.params.id;
