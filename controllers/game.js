@@ -41,7 +41,6 @@ module.exports = {
   },
   buyinProcess:async (req, res)=>{
     const { table_id, member_id, action } = req.body;
-    console.log(table_id, member_id, action);
     const game = await gameRepo.findOrCreate(table_id, member_id);
     await gameRepo.updateRequest(table_id, member_id, action);
     res.json(game);
@@ -55,5 +54,19 @@ module.exports = {
     const tableId = req.params.id;
     const timeline = await requestRepo.getTimelineByTable(tableId);
     res.json(timeline);
-  }
+  },
+  cashback:async (req, res)=>{
+    const {list, total, member_id, table_id} = req.body;
+    const game = await gameRepo.hasRequest(table_id, member_id);//////////////////////////////
+    if (!game) {
+      await requestRepo.cashback(list, total, member_id, table_id);
+
+    }
+    res.redirect(`/game/${table_id}`);
+  },
+  cashbackProcess:async (req, res)=>{
+    const { table_id, member_id, action } = req.body;
+    await gameRepo.updateRequest(table_id, member_id, action);
+    res.json(game);
+  },
 };

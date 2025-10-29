@@ -13,10 +13,12 @@ module.exports = (app) => {
   app.route('/table').post(restrict, game.create);
   app.route('/game/:id').get(restrict, game.index);
   app.route('/buyin').post(restrict, game.buyin);
+  app.route('/cashback').post(restrict, game.cashback);
 
   app.route('/api/game/:id/members').get(game.membersInGame);
   app.route('/api/game/:id/timeline').get(game.timeline);
   app.route('/api/game/buyin/process').post(game.buyinProcess);
+  app.route('/api/game/cashback/process').post(game.cashbackProcess);
   app.get('/logout', (req, res) => {
     req.session.destroy(() => res.redirect('/login'));
   });

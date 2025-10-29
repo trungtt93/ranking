@@ -6,7 +6,6 @@
             <th scope="col">Bốc</th>
             <th scope="col">Tổng</th>
             <th scope="col">Cashback</th>
-            <th scope="col">Thuế</th>
             <th scope="col">Bú</th>
         </tr>
         </thead>
@@ -42,6 +41,69 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="cashbackModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="">Cashback</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/cashback" method="POST" id="cashbackForm">
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <div class="input-group">
+                                <span class="input-group-text">$1</span>
+                                <input type="number" class="form-control" name="list[chip1]" id="chip1" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="input-group ">
+                                <span class="input-group-text">$5</span>
+                                <input type="number" class="form-control" name="list[chip5]" id="chip5" placeholder="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <div class="input-group">
+                                <span class="input-group-text">$10</span>
+                                <input type="number" class="form-control" name="list[chip10]" id="chip10" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="input-group ">
+                                <span class="input-group-text">$25</span>
+                                <input type="number" class="form-control" name="list[chip25]" id="chip25" placeholder="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="offset-3 col-6">
+                            <div class="input-group">
+                                <span class="input-group-text">$50</span>
+                                <input type="number" class="form-control" name="list[chip50]" id="chip50" placeholder="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="input-group">
+                                <span class="input-group-text">$ Tổng</span>
+                                <input type="number" class="form-control" name="total" id="total" placeholder="0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <input type="hidden" name="member_id" value="<%= member.id%>">
+                    <input type="hidden" name="table_id" value="<%= table.table_id%>">
+                    <button type="submit" class="btn btn-outline-info" id="cashbackSubmit">Bú</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <script>
 
     $(document).ready(function() {
@@ -55,6 +117,16 @@
       //   loadMembers(tableId);
       //   loadTimeline(tableId);
       // }, 1000);
+
+        $('#chip1, #chip5, #chip10, #chip25, #chip50').on('input', calculateTotal);
+        function calculateTotal() {
+            let total = (parseInt($('#chip1').val()) || 0) * 1 +
+                (parseInt($('#chip5').val()) || 0) * 5 +
+                (parseInt($('#chip10').val()) || 0) * 10 +
+                (parseInt($('#chip25').val()) || 0) * 25 +
+                (parseInt($('#chip50').val()) || 0) * 50;
+            $('#total').val(total);
+        }
     });
 
     function loadMembers(tableId) {
@@ -66,10 +138,8 @@
           if (data.length > 0) {
             html += '<ul>';
             data.forEach(member => {
-              console.log(member)
               let total = member.buyin * 50
               let amount = member.cashback - total
-              let fee = calcFee(amount)
               html += `
               <tr class="rank-4">
                 <td class="user">
@@ -79,7 +149,6 @@
                 <td class="score">${member.buyin}</td>
                 <td class="score">${total}</td>
                 <td class="score">${member.cashback}</td>
-                <td class="score">${fee}</td>
                 <td class="score">${amount}</td>
             </tr>
             `;
@@ -112,16 +181,32 @@
               rejected: `Từ chối - ${item.updated_at}`,
               waiting: 'Chờ duyệt'
             };
+            if (item.type == 'buyin') {
+               title = `<strong>${item.member_name}</strong> xin bốc thêm 1 bát`;
+            } else {
+              list = JSON.parse(item.cashback_list);
+              console.log(list)
+              title = `<strong>${item.member_name}</strong> xin cashback <strong style="color: #20c997; font-size: 20px">$${item.amount}</strong>`;
+              title += `<br>
+                <small>
+                  ${list.chip1 ? `$1 x ${list.chip1}, ` : ''}
+                  ${list.chip5 ? `$5 x ${list.chip5}, ` : ''}
+                  ${list.chip10 ? `$10 x ${list.chip10}, ` : ''}
+                  ${list.chip25 ? `$25 x ${list.chip25}, ` : ''}
+                  ${list.chip50 ? `$50 x ${list.chip50}, ` : ''}
+                </small>
+              `;
+            }
             let status = statusMap[item.status] || 'Chờ duyệt';
             let isCave = "<%= table.member_id %>" == item.member_id
             let approveBtn = item.status === 'waiting' && isCave
-              ? `<button class="btn btn-sm btn-danger" onclick="processRequest('${item.member_id}', 'rejected')"><i class="fa-solid fa-ban"></i></button>
-                 <button class="btn btn-sm btn-info" onclick="processRequest('${item.member_id}', 'approved')"><i class="fa-solid fa-money-bill-1"></i></button>`
+              ? `<button class="btn btn-sm btn-danger" onclick="processRequest('${item.member_id}', 'rejected', '${item.type}')"><i class="fa-solid fa-ban"></i></button>
+                 <button class="btn btn-sm btn-info" onclick="processRequest('${item.member_id}', 'approved', '${item.type}')"><i class="fa-solid fa-money-bill-1"></i></button>`
               : '';
             let html = `
               <li>
                 <span></span>
-                <div class="title"><strong>${item.member_name}</strong> xin bốc thêm 1 bát</div>
+                <div class="title">${title}</div>
                 <div class="info ${item.status}">${status}</div>
                 <div class="time"><span>${item.created_at}</span></div>
                 <div class="btnAction">${approveBtn}</div>
@@ -136,10 +221,11 @@
       });
     }
 
-    function processRequest(memberId, action) {
+    function processRequest(memberId, action, type) {
       let tableId = '<%= table.table_id %>';
+      let url = type == 'buyin' ? '/api/game/buyin/process' : '/api/game/cashback/process';
       $.ajax({
-        url: `/api/game/buyin/process`,
+        url: url,
         method: 'POST',
         data: {
           table_id: tableId,
@@ -155,10 +241,6 @@
         }
       });
     }
-    function calcFee(total) {
-      return total
-    }
-    // Load immediately once
 </script>
 <style>
     .btnAction {
