@@ -1,26 +1,13 @@
 const db = require('../database/database');
 module.exports = {
-  findOrCreate: (table_id, member_id) => {
+  find: (table_id, member_id) => {
     return new Promise((resolve, reject) => {
       const sql = `
           SELECT * FROM games WHERE table_id = ? AND member_id = ? LIMIT 1
       `;
       db.get(sql, [table_id, member_id], (err, row) => {
-        if (row) {
-          resolve(row);
-        } else {
-          const insertSql = `
-            INSERT INTO games (table_id, member_id)
-            VALUES (?, ?)
-          `;
-          db.run(insertSql, [table_id, member_id], function (err2) {
-            if (err2) return reject(err2);
-            db.get(`SELECT * FROM games WHERE id = ?`, [this.lastID], (err3, newRow) => {
-              if (err3) reject(err3);
-              else resolve(newRow);
-            });
-          });
-        }
+        if (err) reject(err);
+        else resolve(row);
       });
     });
   },
@@ -39,7 +26,7 @@ module.exports = {
           return resolve({ message: 'No pending request found', updated: 0 });
         }
 
-        if (action === 'approved') {
+        if (action == 'approved') {
           const updateGameSql = `
           UPDATE games
           SET buyin = buyin + 1,
@@ -71,6 +58,8 @@ module.exports = {
         g.total,
         g.cashback,
         g.fee,
+        g.fee_amount,
+        g.prev_amount,
         g.amount,
         g.created_at AS game_created_at
       FROM games g
@@ -133,5 +122,49 @@ module.exports = {
       });
     });
   },
+  updateCashbackAndSeason: (tableId, memberId, seasonId, data) => {
+    return new Promise((resolve, reject) => {
+      const updateGameSql = `
+      UPDATE games
+      SET total = ?, fee_amount = ?, amount = ?, updated_at = CURRENT_TIMESTAMP
+      WHERE table_id = ? AND member_id = ?
+    `;
+
+      db.run(updateGameSql, [data.total, data.feeValue, data.amount, tableId, memberId], function (err) {
+        if (err) {
+          console.error('err', err);
+          return reject(err);
+        }
+
+        const updateSeasonSql = `
+        UPDATE season_members
+        SET amount = ?, 
+            updated_at = CURRENT_TIMESTAMP
+        WHERE season_id = ? AND member_id = ?
+      `;
+
+        db.run(updateSeasonSql, [data.amount, seasonId, memberId], function (err2) {
+          if (err2) {
+            console.error('err', err2);
+            return reject(err2);
+          }
+
+          resolve({ message: 'Success' });
+        });
+      });
+    });
+  },
+  createFee: (data) => {
+    return new Promise((resolve, reject) => {
+      const sql = `
+          INSERT INTO games (table_id, member_id, fee, prev_amount, created_at, updated_at)
+          VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      `;
+      db.run(sql, [data.table_id, data.member_id, data.fee, data.prev_amount], function (err) {
+        if (err) return reject(err);
+        resolve({ id: this.lastID });
+      });
+    });
+  }
 
 };

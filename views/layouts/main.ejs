@@ -21,7 +21,7 @@
             <div class="col-4 text-center gray-icon"><a href="/"><i class="fa-3x fa-solid fa-ranking-star"></i></a></div>
             <div class="col-4 text-center gray-icon">
                 <% if (['/table', '/season'].includes(currentPath) && member.role == 'admin') { %>
-                    <%if (typeof season != 'undefined' && season.status == 'progress') { %>
+                    <%if (typeof season != 'undefined' && season.status == 'progress' || typeof season == 'undefined') { %>
                     <a type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
                         <i class="fa-3x fa-solid fa-plus"></i>
                     </a>

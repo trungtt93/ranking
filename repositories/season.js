@@ -109,7 +109,7 @@ module.exports = {
           FROM season_members sm
           JOIN members m ON sm.member_id = m.id
           WHERE sm.season_id = ?
-          ORDER BY sm.amount ASC, sm.id ASC
+          ORDER BY sm.amount DESC, sm.id ASC
         `;
         params = [seasonId];
       } else {
@@ -120,7 +120,7 @@ module.exports = {
           WHERE sm.season_id = (
             SELECT id FROM seasons ORDER BY id DESC LIMIT 1
           )
-          ORDER BY sm.amount ASC, sm.id ASC
+          ORDER BY sm.amount DESC, sm.id ASC
         `;
       }
 

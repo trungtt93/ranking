@@ -41,6 +41,7 @@ module.exports = {
           SELECT
               t.id AS table_id,
               t.title,
+              t.season_id,
               t.created_at AS created_at,
               m.id AS member_id,
               m.name AS member_name,

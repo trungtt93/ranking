@@ -28,11 +28,21 @@ module.exports = {
       else if (v.amount <= -300) fee = 0;
       return { member_id: v.member_id, fee, amount: v.amount };
     });
-    console.log(membersFee)
+
+    for (const member of membersFee) {
+      const existingGame = await gameRepo.find(id, member.member_id); // tableId, memberId
+      if (!existingGame) {
+        await gameRepo.createFee({
+          table_id: id,
+          member_id: member.member_id,
+          fee: member.fee,
+          prev_amount: member.amount
+        });
+      }
+    }
     res.render('game', {
       title: table.title + ' ' + table.member_name,
-      table,
-      membersFee
+      table
     });
   },
   create:async (req, res)=>{
@@ -52,9 +62,8 @@ module.exports = {
   },
   buyinProcess:async (req, res)=>{
     const { table_id, member_id, action } = req.body;
-    const game = await gameRepo.findOrCreate(table_id, member_id);
     await gameRepo.updateRequest(table_id, member_id, action);
-    res.json(game);
+    res.json({ success: true });
   },
   membersInGame:async (req, res)=>{
     const tableId = req.params.id;
@@ -74,6 +83,38 @@ module.exports = {
   cashbackProcess:async (req, res)=>{
     const { table_id, member_id, action } = req.body;
     await gameRepo.updateCashback(table_id, member_id, action);
+    if (action === 'approved') {
+      await module.exports.applyCashback(table_id, member_id);
+    }
     res.json({ success: true });
+  },
+  applyCashback:async (tableId, memberId)=>{
+    const table = await tableRepo.getById(tableId);
+    const seasonMembers = await seasonRepo.seasonMembers(table.season_id);
+    const game = await gameRepo.find(tableId, memberId);
+    const membersFee = _.map(seasonMembers, v => {
+      let fee = 0.1;
+      if (v.amount >= 500) fee = 0.2;
+      else if (v.amount >= 400) fee = 0.15;
+      else if (v.amount <= -300) fee = 0;
+      return { member_id: v.member_id, fee, amount: v.amount};
+    });
+
+    let total = game.buyin * 50
+    let before = game.cashback - total
+    let feeData = _.find(membersFee, { member_id: Number(memberId) });
+
+    let feeValue = (feeData.fee > 0 && before > 0) ? Math.ceil(before * feeData.fee) : 0;
+    let after = before - feeValue;
+    let feeAmount = before + feeData.amount
+    if (feeData.fee == 0 && feeAmount > 0) {
+      feeValue =  Math.ceil(feeAmount * 0.1);
+      after = before - feeValue;
+    }
+    await gameRepo.updateCashbackAndSeason(tableId, memberId, table.season_id, {
+      total,
+      feeValue: feeValue,
+      amount: feeData.amount + after
+    });
   },
 };

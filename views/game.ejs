@@ -113,12 +113,10 @@
             $('#buyinForm').submit();
         });
       let tableId = '<%= table.table_id %>';
-      const membersFee = <%- JSON.stringify(membersFee) %>;
-
-      loadMembers(tableId, membersFee);
+      loadMembers(tableId);
       loadTimeline(tableId);
       // setInterval(function () {
-      //   loadMembers(tableId, membersFee);
+      //   loadMembers(tableId);
       //   loadTimeline(tableId);
       // }, 1000);
 
@@ -133,7 +131,7 @@
         }
     });
 
-    function loadMembers(tableId, membersFee) {
+    function loadMembers(tableId) {
       $.ajax({
         url: `/api/game/${tableId}/members`,
         method: 'GET',
@@ -141,22 +139,15 @@
           let html = '';
           if (data.length > 0) {
             html += '<ul>';
+            let totalBuyin = 0;
+            let totalTotal = 0;
+            let totalCashback = 0;
+            let totalFee = 0;
+            let totalBefore = 0;
+
             data.forEach(member => {
-              let total = member.buyin * 50
-              let before = member.cashback - total
-              let feeObj = membersFee.find(f => f.member_id === member.member_id);
-              let fee = feeObj.fee
-              let feeValue = fee > 0 ? Math.ceil(before * fee) : 0;
-              let after = before - feeValue;
-              let beforeDisplay = `<p style="margin-bottom: 0">${before}<small>(${fee * 100}%)</small></p>`
-              let feeAmount = before + feeObj.amount
-              if (fee == 0 && feeAmount > 0) {
-                beforeDisplay = `<p style="margin-bottom: 0">${before}</p>`;
-                beforeDisplay += `<p style="margin-bottom: 0">${feeObj.amount}<small>(0%)</small></p>`;
-                beforeDisplay += `<p style="margin-bottom: 0">${feeAmount}<small>(10%)</small></p>`;
-                feeValue =  Math.ceil(feeAmount * 0.1);
-                after = before - feeValue;
-              }
+              let before = member.cashback - member.total
+              let beforeDisplay = `<p style="margin-bottom: 0">${before}<small>(${member.fee * 100}%)</small></p>`
               html += `
               <tr class="rank-4">
                 <td class="user">
@@ -164,16 +155,35 @@
                     <span class="username">${member.name}</span>
                 </td>
                 <td class="score">${member.buyin}</td>
-                <td class="score">${total}</td>
-                <td class="score">${member.cashback}</td>
+                <td class="score">${member.total}</td>
+                <td class="score">${member.cashback ? member.cashback : '0'}</td>
                 <td class="score">${beforeDisplay}</td>
-                <td class="score">${feeValue}</td>
-                <td class="score">${after}</td>
+                <td class="score">${member.fee_amount}</td>
+                <td class="score">${member.amount}</td>
 
                 <td class="score"></td>
             </tr>
             `;
+               totalBuyin += member.buyin;
+               totalTotal += member.total;
+               totalCashback += member.cashback;
+               totalBefore += before;
+               totalFee += member.fee_amount;
+
             });
+                html += `
+                <tr class="rank-4" style="font-weight: bold; background-color: #f0f0f0;">
+                    <td class="user">
+                        Tổng
+                    </td>
+                    <td class="score">${totalBuyin}</td>
+                    <td class="score">${totalTotal}</td>
+                    <td class="score">${totalCashback}</td>
+                    <td class="score">${totalBefore}</td>
+                    <td class="score">${totalFee}</td>
+                    <td class="score"></td>
+
+                    <td class="score"></td>`
             html += '</ul>';
           }
           $('#member-list').html(html);
@@ -206,7 +216,7 @@
                title = `<strong>${item.member_name}</strong> xin bốc thêm 1 bát`;
             } else {
               list = JSON.parse(item.cashback_list);
-              title = `<strong>${item.member_name}</strong> xin cashback <strong style="color: #20c997; font-size: 20px">$${item.amount}</strong>`;
+              title = `<strong>${item.member_name}</strong> xin cashback <strong style="color: #20c997; font-size: 20px">$${item.amount ? item.amount : '0'}</strong>`;
               title += `<br>
                 <small>
                   ${list.chip1 ? `$1 x ${list.chip1}, ` : ''}
