@@ -57,16 +57,12 @@ module.exports = {
   },
   cashback:async (req, res)=>{
     const {list, total, member_id, table_id} = req.body;
-    const game = await gameRepo.hasRequest(table_id, member_id);//////////////////////////////
-    if (!game) {
-      await requestRepo.cashback(list, total, member_id, table_id);
-
-    }
+    await requestRepo.cashback(list, total, member_id, table_id);
     res.redirect(`/game/${table_id}`);
   },
   cashbackProcess:async (req, res)=>{
     const { table_id, member_id, action } = req.body;
-    await gameRepo.updateRequest(table_id, member_id, action);
-    res.json(game);
+    await gameRepo.updateCashback(table_id, member_id, action);
+    res.json({ success: true });
   },
 };

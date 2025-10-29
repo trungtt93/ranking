@@ -83,6 +83,55 @@ module.exports = {
         else resolve(rows);
       });
     });
-  }
+  },
+  updateCashback: (table_id, member_id, action) => {
+    return new Promise((resolve, reject) => {
+      const updateRequestSql = `
+          UPDATE cashback_requests
+          SET status = ?, updated_at = CURRENT_TIMESTAMP
+          WHERE table_id = ? AND member_id = ? AND status = 'waiting'
+      `;
+
+      db.run(updateRequestSql, [action, table_id, member_id], function (err) {
+        if (err) return reject(err);
+
+        if (this.changes === 0) {
+          return resolve({ message: 'No pending request found', updated: 0 });
+        }
+
+        if (action === 'approved') {
+          const getCashbackSql = `
+              SELECT cashback
+              FROM cashback_requests
+              WHERE table_id = ? AND member_id = ?
+              ORDER BY updated_at DESC
+                  LIMIT 1
+          `;
+
+          db.get(getCashbackSql, [table_id, member_id], (err2, cashbackData) => {
+            if (err2) return reject(err2);
+
+            if (!cashbackData) {
+              return resolve({ message: 'No cashback data found', updated: 0 });
+            }
+
+            const updateGameSql = `
+            UPDATE games
+            SET cashback = ?,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE table_id = ? AND member_id = ?
+          `;
+
+            db.run(updateGameSql, [cashbackData.cashback, table_id, member_id], function (err3) {
+              if (err3) return reject(err3);
+              resolve({ message: 'Cashback approved and game updated', updated: 1 });
+            });
+          });
+        } else {
+          resolve({ message: `Cashback request ${action}`, updated: 1 });
+        }
+      });
+    });
+  },
 
 };
