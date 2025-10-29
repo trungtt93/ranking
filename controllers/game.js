@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const memberRepo = require("../repositories/member");
 const tableRepo = require("../repositories/table");
 const gameRepo = require("../repositories/game");
@@ -19,9 +20,19 @@ module.exports = {
   index:async (req, res)=>{
     const id = req.params.id;
     const table = await tableRepo.getById(id);
+    const seasonMembers = await seasonRepo.seasonMembers(table.season_id);
+    const membersFee = _.map(seasonMembers, v => {
+      let fee = 0.1;
+      if (v.amount >= 500) fee = 0.2;
+      else if (v.amount >= 400) fee = 0.15;
+      else if (v.amount <= -300) fee = 0;
+      return { member_id: v.member_id, fee, amount: v.amount };
+    });
+    console.log(membersFee)
     res.render('game', {
       title: table.title + ' ' + table.member_name,
-      table
+      table,
+      membersFee
     });
   },
   create:async (req, res)=>{

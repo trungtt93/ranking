@@ -6,6 +6,8 @@
             <th scope="col">Bốc</th>
             <th scope="col">Tổng</th>
             <th scope="col">Cashback</th>
+            <th scope="col">Trước Thuế</th>
+            <th scope="col">Thuế</th>
             <th scope="col">Bú</th>
         </tr>
         </thead>
@@ -111,10 +113,12 @@
             $('#buyinForm').submit();
         });
       let tableId = '<%= table.table_id %>';
-      loadMembers(tableId);
+      const membersFee = <%- JSON.stringify(membersFee) %>;
+
+      loadMembers(tableId, membersFee);
       loadTimeline(tableId);
       // setInterval(function () {
-      //   loadMembers(tableId);
+      //   loadMembers(tableId, membersFee);
       //   loadTimeline(tableId);
       // }, 1000);
 
@@ -129,7 +133,7 @@
         }
     });
 
-    function loadMembers(tableId) {
+    function loadMembers(tableId, membersFee) {
       $.ajax({
         url: `/api/game/${tableId}/members`,
         method: 'GET',
@@ -139,7 +143,20 @@
             html += '<ul>';
             data.forEach(member => {
               let total = member.buyin * 50
-              let amount = member.cashback - total
+              let before = member.cashback - total
+              let feeObj = membersFee.find(f => f.member_id === member.member_id);
+              let fee = feeObj.fee
+              let feeValue = fee > 0 ? Math.ceil(before * fee) : 0;
+              let after = before - feeValue;
+              let beforeDisplay = `<p style="margin-bottom: 0">${before}<small>(${fee * 100}%)</small></p>`
+              let feeAmount = before + feeObj.amount
+              if (fee == 0 && feeAmount > 0) {
+                beforeDisplay = `<p style="margin-bottom: 0">${before}</p>`;
+                beforeDisplay += `<p style="margin-bottom: 0">${feeObj.amount}<small>(0%)</small></p>`;
+                beforeDisplay += `<p style="margin-bottom: 0">${feeAmount}<small>(10%)</small></p>`;
+                feeValue =  Math.ceil(feeAmount * 0.1);
+                after = before - feeValue;
+              }
               html += `
               <tr class="rank-4">
                 <td class="user">
@@ -149,7 +166,11 @@
                 <td class="score">${member.buyin}</td>
                 <td class="score">${total}</td>
                 <td class="score">${member.cashback}</td>
-                <td class="score">${amount}</td>
+                <td class="score">${beforeDisplay}</td>
+                <td class="score">${feeValue}</td>
+                <td class="score">${after}</td>
+
+                <td class="score"></td>
             </tr>
             `;
             });
@@ -185,7 +206,6 @@
                title = `<strong>${item.member_name}</strong> xin bốc thêm 1 bát`;
             } else {
               list = JSON.parse(item.cashback_list);
-              console.log(list)
               title = `<strong>${item.member_name}</strong> xin cashback <strong style="color: #20c997; font-size: 20px">$${item.amount}</strong>`;
               title += `<br>
                 <small>
